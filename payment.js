@@ -21,7 +21,9 @@ function sendOrder(platform) {
 
   const CHAT_IDS = [
     "7549804367", // Admin 1
-    "8227965230"  // Admin 2
+    "8227965230", // Admin 2
+    "6195305681", // Admin 3
+    "6133084298"  // Admin 4
   ];
 
   /* AUTO ORDER ID */
@@ -141,3 +143,4 @@ function goToInstagram() {
   window.location.href =
     "https://ig.me/m/" + INSTAGRAM_USERNAME;
 }
+
