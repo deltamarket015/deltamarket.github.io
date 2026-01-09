@@ -1,0 +1,387 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.container {
+  width: 100%;
+  padding: 20px;
+}
+
+.card {
+  max-width: 440px;
+  margin: auto;
+  background: linear-gradient(145deg, #161633, #0f0f22);
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+  animation: cardEnter 0.7s ease;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.sub {
+  text-align: center;
+  color: #b6b6c8;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+/* =========================
+   FORM
+========================= */
+label {
+  display: block;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #cfcfe6;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  background: #0f0f22;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  color: #fff;
+  font-size: 15px;
+  transition: border 0.25s, box-shadow 0.25s, transform 0.15s;
+}
+
+input::placeholder {
+  color: #777;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #00ffd5;
+  box-shadow: 0 0 0 2px rgba(0, 255, 213, 0.25);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.buttons {
+  margin-top: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+button {
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4e005e, #cf00ad);
+  color: #ffffff;
+  font-size: 15px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(35, 185, 255, 0.456);
+}
+
+button:active {
+  transform: translateY(0);
+  opacity: 0.85;
+}
+
+/* =========================
+   POPUPS
+========================= */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-box {
+  background: #14142b;
+  padding: 28px;
+  border-radius: 18px;
+  text-align: center;
+  max-width: 90%;
+  width: 360px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  animation: popupIn 0.25s ease;
+}
+
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.popup-box h3 {
+  margin-bottom: 10px;
+}
+
+.popup-box p {
+  color: #00ffd5;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.popup-note {
+  display: block;
+  margin-top: 8px;
+  color: #ffcc00;
+  font-size: 13px;
+}
+
+/* =========================
+   POPUP BUTTONS
+========================= */
+.copy-btn {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #0f0f22;
+  color: #fff;
+  font-weight: 600;
+}
+
+.confirm-btn {
+  margin-top: 16px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #00ffd5, #00b3ff);
+  font-weight: 700;
+}
+
+/* =========================
+   LOADING
+========================= */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: white;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loader {
+  width: 52px;
+  height: 52px;
+  border: 4px solid #2a2a4d;
+  border-top: 4px solid #00ffd5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 14px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================
+   MOBILE OPTIMIZATION
+========================= */
+@media (max-width: 480px) {
+  .card {
+    padding: 24px;
+    border-radius: 16px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 14px;
+  }
+}
+
+
+/* =========================
+   BLENDED HEADER (NO BAR)
+========================= */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+
+  /* Fully blended background */
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 5, 15, 0.85),
+    rgba(5, 5, 15, 0.55),
+    rgba(5, 5, 15, 0)
+  );
+
+  backdrop-filter: blur(12px);
+  animation: headerFadeIn 0.8s ease;
+}
+
+@keyframes headerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 22px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand */
+.brand {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   NAV LINKS
+========================= */
+.header-nav {
+  display: flex;
+  gap: 30px;
+}
+
+.header-nav a {
+  position: relative;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #9ca3af;
+  transition: color 0.3s ease;
+}
+
+.header-nav a:hover {
+  color: #ffffff;
+}
+
+/* =========================
+   HOME ANIMATION (ACTIVE)
+========================= */
+.header-nav a.home {
+  color: #ffffff;
+}
+
+.header-nav a.home::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 18px;
+  height: 3px;
+  background: linear-gradient(90deg, #a855f7, #ec4899);
+  border-radius: 10px;
+  transform: translateX(-50%);
+  animation: homePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes homePulse {
+  0% {
+    opacity: 0.4;
+    width: 12px;
+  }
+  50% {
+    opacity: 1;
+    width: 28px;
+  }
+  100% {
+    opacity: 0.4;
+    width: 12px;
+  }
+}
+
+/* =========================
+   CONTENT OFFSET
+========================= */
+body {
+  padding-top: 90px;
+}
+
+/* =========================
+   MOBILE OPTIMIZATION
+========================= */
+@media (max-width: 600px) {
+  .header-container {
+    padding: 18px 20px;
+  }
+
+  .brand {
+    font-size: 22px;
+  }
+
+  .header-nav {
+    gap: 20px;
+  }
+
+  .header-nav a {
+    font-size: 14px;
+  }
+}
