@@ -116,7 +116,7 @@ function confirmRedirect() {
   /* DISCORD */
   if (selectedPlatform === "discord") {
     window.location.href =
-      `https://discord.gg/crgrbwtBdf`;
+      `https://discord.gg/UT2wZZWvUA`;
   }
 
   /* INSTAGRAM → CUSTOM POPUP */
@@ -143,4 +143,3 @@ function goToInstagram() {
   window.location.href =
     "https://ig.me/m/" + INSTAGRAM_USERNAME;
 }
-
