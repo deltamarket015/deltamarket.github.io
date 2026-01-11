@@ -2,37 +2,105 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("productSearch");
     const items = document.querySelectorAll(".product-link");
     const empty = document.getElementById("noProduct");
-    let timer;
+    const grid = document.querySelector(".products-grid");
 
-    input.addEventListener("input", () => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            let count = 0;
-            const val = input.value.toLowerCase();
+    if (!input || !grid) return;
 
-            items.forEach(item => {
-                const title = item.querySelector(".product-title");
-                const text = title.textContent;
-                title.textContent = text;
+    /* =========================
+       STORE ORIGINAL TITLES
+    ========================= */
+    items.forEach(item => {
+        const title = item.querySelector(".product-title");
+        if (!title.dataset.original) {
+            title.dataset.original = title.textContent.trim();
+        }
+    });
 
-                if (!val || text.toLowerCase().includes(val)) {
-                    item.style.display = "block";
-                    item.classList.remove("hide");
-                    count++;
+    /* =========================
+       RESET EVERYTHING
+    ========================= */
+    const resetAll = () => {
+        items.forEach(item => {
+            const title = item.querySelector(".product-title");
+            title.innerHTML = title.dataset.original;
+            item.classList.remove("hide");
+        });
 
-                    if (val) {
-                        title.innerHTML = text.replace(
-                            new RegExp(`(${val})`, "ig"),
-                            "<mark>$1</mark>"
-                        );
-                    }
-                } else {
-                    item.classList.add("hide");
-                    setTimeout(() => item.style.display = "none", 300);
-                }
-            });
+        grid.classList.remove("searching");
+        if (empty) empty.style.display = "none";
+    };
 
-            empty.style.display = count ? "none" : "block";
-        }, 120);
+    /* =========================
+       SEARCH LOGIC
+    ========================= */
+    const runSearch = () => {
+        const value = input.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        /* EMPTY INPUT → FULL RESET */
+        if (value === "") {
+            resetAll();
+            return;
+        }
+
+        grid.classList.add("searching");
+
+        items.forEach(item => {
+            const title = item.querySelector(".product-title");
+            const original = title.dataset.original;
+            const lower = original.toLowerCase();
+
+            if (lower.includes(value)) {
+                item.classList.remove("hide");
+                visibleCount++;
+
+                title.innerHTML = original.replace(
+                    new RegExp(`(${value})`, "ig"),
+                    "<mark>$1</mark>"
+                );
+            } else {
+                item.classList.add("hide");
+            }
+        });
+
+        if (empty) {
+            empty.style.display = visibleCount === 0 ? "block" : "none";
+        }
+    };
+
+    /* =========================
+       INPUT EVENT (AUTO)
+    ========================= */
+    input.addEventListener("input", runSearch);
+
+    /* =========================
+       ENTER KEY (SAFE)
+    ========================= */
+    input.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            runSearch();
+        }
+    });
+
+    /* =========================
+       ESC KEY (CLEAR)
+    ========================= */
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape") {
+            input.value = "";
+            resetAll();
+        }
+    });
+
+    /* =========================
+       PAGE LOAD SAFETY
+    ========================= */
+    input.value = "";
+    resetAll();
+
+    window.addEventListener("pageshow", () => {
+        input.value = "";
+        resetAll();
     });
 });
