@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delta Market</title>
+
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
+
+    
+
 
 <!-- ================= HEADER ================= -->
 <header class="header">
@@ -79,6 +84,25 @@
 <!-- ================= PRODUCTS ================= -->
 <section id="products" class="products-section">
     <h2>Our Products</h2>
+
+    <div class="product-search-wrapper">
+    <label class="product-search" for="productSearch">
+        <span class="search-icon-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+
+        <input
+            id="productSearch"
+            type="text"
+            placeholder="Search products"
+            aria-label="Search products"
+        >
+    </label>
+</div>
+
+</section>
+
+
 
     <div class="products-grid">
 
@@ -287,51 +311,13 @@
 </footer>
 
 
-<!-- Review-scrolll -->
+<!-- ================= JS ================= -->
+<script src="js/search.js" defer></script>
+<script src="js/reviews.js" defer></script>
+<script src="js/lazy-images.js" defer></script>
+<script src="js/skeleton.js" defer></script>
+<script src="js/a11y.js" defer></script>
 
-<script>
-const track = document.querySelector(".reviews-track");
-let isDown = false;
-let startX;
-let scrollLeft;
-
-track.addEventListener("mousedown", e => {
-    isDown = true;
-    track.style.animationPlayState = "paused";
-    startX = e.pageX;
-});
-
-track.addEventListener("mouseleave", () => {
-    isDown = false;
-    track.style.animationPlayState = "running";
-});
-
-track.addEventListener("mouseup", () => {
-    isDown = false;
-    track.style.animationPlayState = "running";
-});
-
-track.addEventListener("mousemove", e => {
-    if (!isDown) return;
-    const walk = (e.pageX - startX) * 1.2;
-    track.style.transform = `translateX(${walk}px)`;
-});
-
-/* TOUCH */
-track.addEventListener("touchstart", e => {
-    track.style.animationPlayState = "paused";
-    startX = e.touches[0].pageX;
-});
-
-track.addEventListener("touchmove", e => {
-    const walk = (e.touches[0].pageX - startX) * 1.2;
-    track.style.transform = `translateX(${walk}px)`;
-});
-
-track.addEventListener("touchend", () => {
-    track.style.animationPlayState = "running";
-});
-</script>
 
 
 </body>
