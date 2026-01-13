@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buy Product</title>
+<link rel="stylesheet" href="payment.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h2>
+  <span style="color: aliceblue;">Buy Product from </span>
+  <span style="color: #e400ec;">Delta Market</span>
+</h2> 
+    <p class="sub">Choose platform & payment</p>
+
+    <label>Your Name</label>
+    <input id="name" type="text" placeholder="Enter your name">
+
+    <label>Product Name</label>
+    <input id="product" type="text" placeholder="Enter product name">
+
+    <label>Payment Method</label>
+    <select id="payment">
+      <option value="UPI">UPI</option>
+      <option value="Binance">Binance</option>
+    </select>
+
+    <label>Buy Via</label>
+    <div class="buttons">
+      <button onclick="sendOrder('telegram')">Buy via Telegram</button>
+      <button onclick="sendOrder('discord')">NOT Available</button>
+      <button onclick="sendOrder('instagram')">Buy via Instagram</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/payment.js"></script>
+
+<!-- Order Success Popup -->
+<!-- Order Success Popup -->
+<div id="popup" class="popup-overlay">
+  <div class="popup-box">
+    <h3>✅ Order Sent Successfully</h3>
+
+    <p id="popupOrderId"></p>
+    <button class="copy-btn" onclick="copyOrderId()">📋 Copy Order ID</button>
+
+    <small class="popup-note">
+      ⚠️ Please save this Order ID for refund or replacement.
+    </small>
+
+    <br>
+    <button class="confirm-btn" onclick="confirmRedirect()">Confirm</button>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading" class="loading-overlay">
+  <div class="loader"></div>
+  <p>Sending order...</p>
+</div>
+
+<!-- Success Sound -->
+<audio id="successSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2867.mp3" type="audio/mpeg">
+</audio>
+
+
+<!-- Instagram Instruction Popup -->
+<div id="instaPopup" class="popup-overlay">
+  <div class="popup-box">
+    <h3>📸 Continue on Instagram</h3>
+
+    <p id="instaOrderId"></p>
+
+    <button class="copy-btn" onclick="copyOrderId()">
+      📋 Copy Order ID
+    </button>
+
+    <small class="popup-note">
+      Paste this Order ID in Instagram chat to continue.
+    </small>
+
+    <br>
+    <button class="confirm-btn" onclick="goToInstagram()">
+      Open Instagram
+    </button>
+  </div>
+</div>
+
+<!-- Professional Header -->
+<header class="site-header">
+  <div class="header-container">
+
+    <div class="brand">
+      Delta Market
+    </div>
+
+    <nav class="header-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+
+  </div>
+</header>
+
+
+</body>
+</html>
