@@ -17,7 +17,7 @@ function sendOrder(platform) {
   selectedPlatform = platform;
 
   /* 🔴 TELEGRAM CONFIG */
-  const BOT_TOKEN = "8318720033:AAGEmSwAXk1BANwB4kivRX7ceqRudvzHrdc";
+  const BOT_TOKEN = "8460003570:AAFp68UkZM8ujqKx_ukj0skHL7VdgelaCyY";
 
   const CHAT_IDS = [
     "7549804367", // Admin 1
