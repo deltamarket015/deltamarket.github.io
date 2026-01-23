@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delta Market</title>
+
+  <link rel="stylesheet" href="payment.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+
+  <header class="premium-header">
+  <div class="header-inner">
+    <div class="header-title">Delta Market</div>
+
+    <nav class="header-nav">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="terms.html" class="nav-link">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<div class="card">
+  <h2>
+      Buy from <span>Delta Market</span>
+    </h2>
+    <p class="subtitle">Fast • Secure • Reliable</p>
+
+  <input id="name" placeholder="Your name">
+  <input id="product" placeholder="Product">
+  <input id="email" placeholder="Email">
+
+  <select id="payment">
+    <option>UPI</option>
+    <option>Binance</option>
+  </select>
+
+  <input id="referral" placeholder="Admin Referral Code (Optional)">
+  <!-- Buy Buttons -->
+  <button onclick="startOrder('Telegram')">
+    Buy via Telegram
+  </button>
+
+  <button onclick="startOrder('Discord')">
+    Buy via Discord
+  </button>
+
+  <button onclick="startOrder('Instagram')">
+    Buy via Instagram
+  </button>
+</div>
+
+  <!-- Loading Popup -->
+<div id="loadingBox" class="overlay">
+  <div class="box">
+    <p>Sending OTP...</p>
+    <div class="loader"></div>
+  </div>
+</div>
+
+
+<!-- OTP Popup -->
+<div id="otpBox" class="overlay">
+  <div class="box">
+    <p>Enter OTP sent to your email</p>
+    <input id="otp" placeholder="6-digit OTP">
+    <button onclick="verifyOtp()">Verify</button>
+  </div>
+</div>
+
+<!-- Success Popup -->
+<div id="successBox" class="overlay">
+  <div class="box">
+    <p id="orderIdText"></p>
+    <button onclick="goPlatform()">Continue</button>
+  </div>
+</div>
+
+<script src="payment.js"></script>
+</body>
+</html>
