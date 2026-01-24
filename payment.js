@@ -32,6 +32,9 @@ function startOrder(platform) {
   document.getElementById("otpBox").style.display = "none";
   document.getElementById("successBox").style.display = "none";
 
+  // ✅ SHOW LOADING INSTANTLY (no delay)
+  document.getElementById("loadingBox").style.display = "flex";
+
   fetch(API + "/send-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -39,22 +42,22 @@ function startOrder(platform) {
   })
     .then(res => res.json())
     .then(data => {
+      // Hide loading
+      document.getElementById("loadingBox").style.display = "none";
+
       if (!data.success) {
         alert("Failed to send OTP");
         return;
       }
 
-      // Show loading first
-      document.getElementById("loadingBox").style.display = "flex";
-
-      // Delay OTP popup for 2 seconds
-      setTimeout(() => {
-        document.getElementById("loadingBox").style.display = "none";
-        document.getElementById("otp").value = "";
-        document.getElementById("otpBox").style.display = "flex";
-      }, 2000);
+      // ✅ Show OTP popup instantly after success
+      document.getElementById("otp").value = "";
+      document.getElementById("otpBox").style.display = "flex";
     })
-    .catch(() => alert("Server error"));
+    .catch(() => {
+      document.getElementById("loadingBox").style.display = "none";
+      alert("Server error");
+    });
 }
 
 /* ======================
@@ -141,6 +144,3 @@ function goPlatform() {
   window.location.href =
     `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
 }
-
-
-
