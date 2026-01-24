@@ -1,4 +1,4 @@
-const API = "https://dms-backend-lv3u.onrender.com";
+const API = "https://backend-production-2cbc.up.railway.app";
 const VALID_REFERRALS = ["REIO50", "SHU50", "FLASH50"];
 
 let cache = {};
@@ -141,5 +141,6 @@ function goPlatform() {
   window.location.href =
     `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
 }
+
 
 
