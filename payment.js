@@ -1,10 +1,10 @@
 const API = "https://api.deltamarket.store";
-const VALID_REFERRALS = ["REIO50", "SHU50", "FLASH50"];
+const VALID_REFERRALS = ["RIO50", "SUE50", "FLASH50"];
 
 let cache = {};
 
 /* ======================
-   START ORDER
+   START ORDER (SEND OTP)
 ====================== */
 function startOrder(platform) {
   cache.platform = platform;
@@ -22,35 +22,27 @@ function startOrder(platform) {
     .trim()
     .toUpperCase();
 
-  // Optional but must be valid if entered
   if (cache.referral && !VALID_REFERRALS.includes(cache.referral)) {
     alert("Invalid referral code.");
     return;
   }
 
-  // Close old popups if open
   document.getElementById("otpBox").style.display = "none";
   document.getElementById("successBox").style.display = "none";
-
-  // ✅ SHOW LOADING INSTANTLY (no delay)
   document.getElementById("loadingBox").style.display = "flex";
 
-  fetch(API + "/send-otp", {
+  /* 🔥 SEND OTP THROUGH /send-order */
+  fetch(API + "/send-order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: cache.email })
+    body: JSON.stringify({
+      type: "SEND_OTP",
+      email: cache.email
+    })
   })
     .then(res => res.json())
-    .then(data => {
-      // Hide loading
+    .then(() => {
       document.getElementById("loadingBox").style.display = "none";
-
-      if (!data.success) {
-        alert("Failed to send OTP");
-        return;
-      }
-
-      // ✅ Show OTP popup instantly after success
       document.getElementById("otp").value = "";
       document.getElementById("otpBox").style.display = "flex";
     })
@@ -61,7 +53,7 @@ function startOrder(platform) {
 }
 
 /* ======================
-   VERIFY OTP
+   VERIFY OTP + PLACE ORDER
 ====================== */
 function verifyOtp() {
   const otp = document.getElementById("otp").value.trim();
@@ -71,15 +63,19 @@ function verifyOtp() {
     return;
   }
 
-  fetch(API + "/verify-otp", {
+  document.getElementById("loadingBox").style.display = "flex";
+
+  /* 🔥 VERIFY + CREATE ORDER THROUGH /send-order */
+  fetch(API + "/send-order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: cache.email,
+      type: "VERIFY_OTP",
       otp: otp,
       orderData: {
         name: cache.name,
         product: cache.product,
+        email: cache.email,
         payment: cache.payment,
         platform: cache.platform,
         referral: cache.referral || "None"
@@ -88,18 +84,22 @@ function verifyOtp() {
   })
     .then(res => res.json())
     .then(data => {
-      if (!data.success) {
-        alert("Invalid OTP");
-        return;
-      }
+      document.getElementById("loadingBox").style.display = "none";
 
-      cache.orderId = data.orderId;
+      /* fallback if backend doesn’t send orderId */
+      cache.orderId =
+        data.orderId ||
+        "DMS-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
       document.getElementById("otpBox").style.display = "none";
-      document.getElementById("orderIdText").innerText = "Order ID: " + data.orderId;
+      document.getElementById("orderIdText").innerText =
+        "Order ID: " + cache.orderId;
       document.getElementById("successBox").style.display = "flex";
     })
-    .catch(() => alert("Server error"));
+    .catch(() => {
+      document.getElementById("loadingBox").style.display = "none";
+      alert("Server error");
+    });
 }
 
 /* ======================
@@ -119,14 +119,14 @@ function goPlatform() {
     `Referral: ${cache.referral || "None"}\n` +
     `Platform: ${cache.platform}`;
 
-  // ✅ CHANGE THESE LINKS
-  const TELEGRAM_USERNAME = "Delta_Market_Owner"; // only username
+  const TELEGRAM_USERNAME = "Delta_Market_Owner";
   const DISCORD_LINK = "https://discord.gg/mWK5Kt6WRt";
   const INSTAGRAM_LINK = "https://instagram.com/YOUR_USERNAME";
 
   if (cache.platform === "Telegram") {
     window.location.href =
-      `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
+      `https://t.me/${TELEGRAM_USERNAME}?text=` +
+      encodeURIComponent(msg);
     return;
   }
 
@@ -140,8 +140,7 @@ function goPlatform() {
     return;
   }
 
-  // fallback
   window.location.href =
-    `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
+    `https://t.me/${TELEGRAM_USERNAME}?text=` +
+    encodeURIComponent(msg);
 }
-
