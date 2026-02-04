@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Page</title>
+  <title>Delta Market</title>
 
   <link rel="stylesheet" href="payment.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +41,20 @@
     <option>Binance</option>
   </select>
 
-  <input id="referral" placeholder="Admin Referral Code (Optional)">
+  <div class="referral-box">
+  <input
+    type="text"
+    id="referralCode"
+    placeholder="Coupon Code"
+  />
+  <button id="applyReferral">Apply</button>
+</div>
+
+<!-- Popup message -->
+<div id="discountPopup" class="discount-popup">
+  ✅ 5% discount applied to your product
+</div>
+
   <!-- Buy Buttons -->
   <button onclick="startOrder('Telegram')">
     Buy via Telegram
@@ -84,4 +98,6 @@
 <script src="payment.js"></script>
 </body>
 </html>
+
+
 
