@@ -1,103 +1,195 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delta Market</title>
+const API = "https://api.deltamarket.store";
+const VALID_REFERRALS = ["RIEO50", "SUE50", "FLASH50"];
 
-  <link rel="stylesheet" href="payment.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+let cache = {};
 
+/* ======================
+   REFERRAL APPLY LOGIC
+====================== */
 
-</head>
-<body>
+let referralApplied = false;
 
-  <header class="premium-header">
-  <div class="header-inner">
-    <div class="header-title">Delta Market</div>
+const referralInput = document.getElementById("referralCode");
+const applyReferralBtn = document.getElementById("applyReferral");
+const discountPopup = document.getElementById("discountPopup");
 
-    <nav class="header-nav">
-      <a href="index.html" class="nav-link active">Home</a>
-      <a href="terms.html" class="nav-link">Terms</a>
-    </nav>
-  </div>
-</header>
+if (applyReferralBtn && referralInput && discountPopup) {
+  applyReferralBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
 
-<div class="card">
-  <h2>
-      Buy from <span>Delta Market</span>
-    </h2>
-    <p class="subtitle">Fast • Secure • Reliable</p>
+    if (referralApplied) {
+      discountPopup.innerText = "⚠️ Discount already applied";
+      discountPopup.style.display = "block";
+      return;
+    }
 
-  <input id="name" placeholder="Your name">
-  <input id="product" placeholder="Product">
-  <input id="email" placeholder="Email">
+    const code = referralInput.value.trim().toUpperCase();
 
-  <select id="payment">
-    <option>UPI</option>
-    <option>Binance</option>
-  </select>
+    if (!code) {
+      alert("Please enter referral code");
+      return;
+    }
 
-  <div class="referral-box">
-  <input
-    type="text"
-    id="referralCode"
-    placeholder="Coupon Code"
-  />
-  <button id="applyReferral">Apply</button>
-</div>
+    if (!VALID_REFERRALS.includes(code)) {
+      alert("Invalid referral code");
+      return;
+    }
 
-<!-- Popup message -->
-<div id="discountPopup" class="discount-popup">
-  ✅ 5% discount applied to your product
-</div>
+    referralApplied = true;
+    referralInput.value = code;
+    referralInput.disabled = true;
+    applyReferralBtn.disabled = true;
+    applyReferralBtn.style.opacity = "0.6";
 
-  <!-- Buy Buttons -->
-  <button onclick="startOrder('Telegram')">
-    Buy via Telegram
-  </button>
+    discountPopup.innerText = "✅ 5% discount applied to your product";
+    discountPopup.style.display = "block";
+  });
 
-  <button onclick="startOrder('Discord')">
-    Buy via Discord
-  </button>
+  // Hide popup when clicking anywhere else
+  document.addEventListener("click", function () {
+    discountPopup.style.display = "none";
+  });
 
-  <button onclick="startOrder('Instagram')">
-    Buy via Instagram
-  </button>
-</div>
+  // Prevent popup click from closing itself
+  discountPopup.addEventListener("click", function (e) {
+    e.stopPropagation();
+  });
+}
 
-  <!-- Loading Popup -->
-<div id="loadingBox" class="overlay">
-  <div class="box">
-    <p>Sending OTP...</p>
-    <div class="loader"></div>
-  </div>
-</div>
+/* ======================
+   START ORDER
+====================== */
+function startOrder(platform) {
+  cache.platform = platform;
+  cache.name = document.getElementById("name").value.trim();
+  cache.product = document.getElementById("product").value.trim();
+  cache.email = document.getElementById("email").value.trim();
+  cache.payment = document.getElementById("payment").value;
 
+  if (!cache.name || !cache.product || !cache.email) {
+    alert("Please fill all fields");
+    return;
+  }
 
-<!-- OTP Popup -->
-<div id="otpBox" class="overlay">
-  <div class="box">
-    <p>Enter OTP sent to your email</p>
-    <input id="otp" placeholder="6-digit OTP">
-    <button onclick="verifyOtp()">Verify</button>
-  </div>
-</div>
+  cache.referral = (document.getElementById("referralCode")?.value || "")
+    .trim()
+    .toUpperCase();
 
-<!-- Success Popup -->
-<div id="successBox" class="overlay">
-  <div class="box">
-    <p id="orderIdText"></p>
-    <button onclick="goPlatform()">Continue</button>
-  </div>
-</div>
+  // Optional but must be valid if entered
+  if (cache.referral && !VALID_REFERRALS.includes(cache.referral)) {
+    alert("Invalid referral code.");
+    return;
+  }
 
-<script src="payment.js"></script>
-</body>
-</html>
+  document.getElementById("otpBox").style.display = "none";
+  document.getElementById("successBox").style.display = "none";
 
+  document.getElementById("loadingBox").style.display = "flex";
 
+  fetch(API + "/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: cache.email })
+  })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("loadingBox").style.display = "none";
 
+      if (!data.success) {
+        alert("Failed to send OTP");
+        return;
+      }
+
+      document.getElementById("otp").value = "";
+      document.getElementById("otpBox").style.display = "flex";
+    })
+    .catch(() => {
+      document.getElementById("loadingBox").style.display = "none";
+      alert("Server error");
+    });
+}
+
+/* ======================
+   VERIFY OTP
+====================== */
+function verifyOtp() {
+  const otp = document.getElementById("otp").value.trim();
+
+  if (!otp) {
+    alert("Please enter OTP");
+    return;
+  }
+
+  fetch(API + "/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: cache.email,
+      otp: otp,
+      orderData: {
+        name: cache.name,
+        product: cache.product,
+        payment: cache.payment,
+        platform: cache.platform,
+        referral: cache.referral || "None"
+      }
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert("Invalid OTP");
+        return;
+      }
+
+      cache.orderId = data.orderId;
+
+      document.getElementById("otpBox").style.display = "none";
+      document.getElementById("orderIdText").innerText =
+        "Order ID: " + data.orderId;
+      document.getElementById("successBox").style.display = "flex";
+    })
+    .catch(() => alert("Server error"));
+}
+
+/* ======================
+   REDIRECT
+====================== */
+function goPlatform() {
+  if (!cache.orderId) {
+    alert("Order ID not found. Please try again.");
+    return;
+  }
+
+  const msg =
+    `Order ID: ${cache.orderId}\n` +
+    `Name: ${cache.name}\n` +
+    `Product: ${cache.product}\n` +
+    `Payment: ${cache.payment}\n` +
+    `Referral: ${cache.referral || "None"}\n` +
+    `Platform: ${cache.platform}`;
+
+  const TELEGRAM_USERNAME = "Delta_Market_Owner";
+  const DISCORD_LINK = "https://discord.gg/mWK5Kt6WRt";
+  const INSTAGRAM_LINK = "https://instagram.com/YOUR_USERNAME";
+
+  if (cache.platform === "Telegram") {
+    window.location.href =
+      `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
+    return;
+  }
+
+  if (cache.platform === "Discord") {
+    window.location.href = DISCORD_LINK;
+    return;
+  }
+
+  if (cache.platform === "Instagram") {
+    window.location.href = INSTAGRAM_LINK;
+    return;
+  }
+
+  window.location.href =
+    `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
+}
