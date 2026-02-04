@@ -233,3 +233,43 @@ h2 span {
 body{
   padding-top: 80px;
 }
+
+.referral-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.referral-box input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.referral-box button {
+  padding: 8px 14px;
+  background: #1f2937;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.referral-box button:hover {
+  background: #111827;
+}
+
+/* Popup */
+.discount-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #16a34a;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
