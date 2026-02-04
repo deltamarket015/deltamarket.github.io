@@ -1,149 +1,103 @@
-const API = "https://api.deltamarket.store";
-const VALID_REFERRALS = ["RIEO50", "SUE50", "FLASH50"];
 
-let cache = {};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delta Market</title>
 
-/* ======================
-   START ORDER
-====================== */
-function startOrder(platform) {
-  cache.platform = platform;
-  cache.name = document.getElementById("name").value.trim();
-  cache.product = document.getElementById("product").value.trim();
-  cache.email = document.getElementById("email").value.trim();
-  cache.payment = document.getElementById("payment").value;
+  <link rel="stylesheet" href="payment.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  if (!cache.name || !cache.product || !cache.email) {
-    alert("Please fill all fields");
-    return;
-  }
 
-  cache.referral = (document.getElementById("referral")?.value || "")
-    .trim()
-    .toUpperCase();
+</head>
+<body>
 
-  // Optional but must be valid if entered
-  if (cache.referral && !VALID_REFERRALS.includes(cache.referral)) {
-    alert("Invalid referral code.");
-    return;
-  }
+  <header class="premium-header">
+  <div class="header-inner">
+    <div class="header-title">Delta Market</div>
 
-  // Close old popups if open
-  document.getElementById("otpBox").style.display = "none";
-  document.getElementById("successBox").style.display = "none";
+    <nav class="header-nav">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="terms.html" class="nav-link">Terms</a>
+    </nav>
+  </div>
+</header>
 
-  // ✅ SHOW LOADING INSTANTLY (no delay)
-  document.getElementById("loadingBox").style.display = "flex";
+<div class="card">
+  <h2>
+      Buy from <span>Delta Market</span>
+    </h2>
+    <p class="subtitle">Fast • Secure • Reliable</p>
 
-  fetch(API + "/send-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: cache.email })
-  })
-    .then(res => res.json())
-    .then(data => {
-      // Hide loading
-      document.getElementById("loadingBox").style.display = "none";
+  <input id="name" placeholder="Your name">
+  <input id="product" placeholder="Product">
+  <input id="email" placeholder="Email">
 
-      if (!data.success) {
-        alert("Failed to send OTP");
-        return;
-      }
+  <select id="payment">
+    <option>UPI</option>
+    <option>Binance</option>
+  </select>
 
-      // ✅ Show OTP popup instantly after success
-      document.getElementById("otp").value = "";
-      document.getElementById("otpBox").style.display = "flex";
-    })
-    .catch(() => {
-      document.getElementById("loadingBox").style.display = "none";
-      alert("Server error");
-    });
-}
+  <div class="referral-box">
+  <input
+    type="text"
+    id="referralCode"
+    placeholder="Coupon Code"
+  />
+  <button id="applyReferral">Apply</button>
+</div>
 
-/* ======================
-   VERIFY OTP
-====================== */
-function verifyOtp() {
-  const otp = document.getElementById("otp").value.trim();
+<!-- Popup message -->
+<div id="discountPopup" class="discount-popup">
+  ✅ 5% discount applied to your product
+</div>
 
-  if (!otp) {
-    alert("Please enter OTP");
-    return;
-  }
+  <!-- Buy Buttons -->
+  <button onclick="startOrder('Telegram')">
+    Buy via Telegram
+  </button>
 
-  fetch(API + "/verify-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: cache.email,
-      otp: otp,
-      orderData: {
-        name: cache.name,
-        product: cache.product,
-        payment: cache.payment,
-        platform: cache.platform,
-        referral: cache.referral || "None"
-      }
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) {
-        alert("Invalid OTP");
-        return;
-      }
+  <button onclick="startOrder('Discord')">
+    Buy via Discord
+  </button>
 
-      cache.orderId = data.orderId;
+  <button onclick="startOrder('Instagram')">
+    Buy via Instagram
+  </button>
+</div>
 
-      document.getElementById("otpBox").style.display = "none";
-      document.getElementById("orderIdText").innerText = "Order ID: " + data.orderId;
-      document.getElementById("successBox").style.display = "flex";
-    })
-    .catch(() => alert("Server error"));
-}
+  <!-- Loading Popup -->
+<div id="loadingBox" class="overlay">
+  <div class="box">
+    <p>Sending OTP...</p>
+    <div class="loader"></div>
+  </div>
+</div>
 
-/* ======================
-   REDIRECT (Telegram / Discord / Instagram)
-====================== */
-function goPlatform() {
-  if (!cache.orderId) {
-    alert("Order ID not found. Please try again.");
-    return;
-  }
 
-  const msg =
-    `Order ID: ${cache.orderId}\n` +
-    `Name: ${cache.name}\n` +
-    `Product: ${cache.product}\n` +
-    `Payment: ${cache.payment}\n` +
-    `Referral: ${cache.referral || "None"}\n` +
-    `Platform: ${cache.platform}`;
+<!-- OTP Popup -->
+<div id="otpBox" class="overlay">
+  <div class="box">
+    <p>Enter OTP sent to your email</p>
+    <input id="otp" placeholder="6-digit OTP">
+    <button onclick="verifyOtp()">Verify</button>
+  </div>
+</div>
 
-  // ✅ CHANGE THESE LINKS
-  const TELEGRAM_USERNAME = "Delta_Market_Owner"; // only username
-  const DISCORD_LINK = "https://discord.gg/mWK5Kt6WRt";
-  const INSTAGRAM_LINK = "https://instagram.com/YOUR_USERNAME";
+<!-- Success Popup -->
+<div id="successBox" class="overlay">
+  <div class="box">
+    <p id="orderIdText"></p>
+    <button onclick="goPlatform()">Continue</button>
+  </div>
+</div>
 
-  if (cache.platform === "Telegram") {
-    window.location.href =
-      `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
-    return;
-  }
-
-  if (cache.platform === "Discord") {
-    window.location.href = DISCORD_LINK;
-    return;
-  }
-
-  if (cache.platform === "Instagram") {
-    window.location.href = INSTAGRAM_LINK;
-    return;
-  }
-
-  // fallback
-  window.location.href =
-    `https://t.me/${TELEGRAM_USERNAME}?text=` + encodeURIComponent(msg);
-}
+<script src="payment.js"></script>
+</body>
+</html>
 
 
 
